@@ -60,7 +60,7 @@ variable "groups_identity" {
     ]
     description = "Group for ReadOnly Users"
   }
-  "DevopsBasic" = {
+  "DevopsReadonly" = {
     usernames = [
       "example1@gmail.com",
       "example2@gmail.com"
