@@ -22,7 +22,7 @@ AWS
 |users_identity|User related information such as username, firstname, lastname, email-id etc|map(object)| null | no |
 |groups_identity|Group related information such as groupname, username, description | map(object) | null | no
 | permission_sets | Permission for accessing AWS resources you can use managed policy or inline policy | map(object) | null | no
-|account_assignment|Acessing account by which user/group with which permission set| map(object)| null | no |
+|account_assignment|Allow user/group to access account with permission set| map(object)| null | no |
 
 ## Outputs
 | Name | Description |
