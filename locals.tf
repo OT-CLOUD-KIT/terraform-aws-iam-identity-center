@@ -13,14 +13,36 @@ locals {
 }
 
 locals {
-  managed_policy = { for permission_set_name, policy in var.permission_sets :
-    permission_set_name => policy.managed_policy_arn
-    if(policy.managed_policy_arn != "")
-  }
+  local_managed_policy = flatten([for permission_set_name, policies in var.permission_sets :
+    flatten([for policy in policies.managed_policy_arns :
+      merge({
+        policy              = policy,
+        permission_set_name = permission_set_name
+        key                 = join(": ", [permission_set_name], [policy])
+      })
+    ])
+  ])
+  managed_policy = { for key, policy in local.local_managed_policy : policy.key => policy }
+
 
   inline_policy = { for permission_set_name, policy in var.permission_sets :
     permission_set_name => fileexists("${path.root}/inline-policy/${permission_set_name}.json")
     if fileexists("${path.root}/inline-policy/${permission_set_name}.json")
   }
+}
+
+locals {
+  local_account_assignment = flatten([for key, value in var.account_assignment :
+    flatten([for targets in value.targets_id :
+      merge({
+        key            = join(": ", [key], [targets])
+        target_id      = targets
+        permission_set = value.permission_set
+        principal_type = value.principal_type
+        resource_name  = value.resource_name
+      })
+    ])
+  ])
+  account_assignment = { for targets in local.local_account_assignment : targets.key => targets }
 }
 
